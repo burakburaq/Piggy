@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "piggy-gametest",
+  "version": "1.0.0",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-client-gametest": [
+      "dev.piggy.n7q4m2.test.PiggyGameTest",
+      "dev.piggy.n7q4m2.test.QualityHudGameTest",
+      "dev.piggy.n7q4m2.test.QualityInventoryGameTest",
+      "dev.piggy.n7q4m2.test.QualityPlacementGameTest",
+      "dev.piggy.n7q4m2.test.MovementRegressionGameTest",
+      "dev.piggy.n7q4m2.test.MigrationSmokeGameTest",
+      "dev.piggy.n7q4m2.test.BhopToggleGameTest",
+      "dev.piggy.n7q4m2.test.ClientOnlyBhopGameTest",
+      "dev.piggy.n7q4m2.test.AntiAfkGameTest",
+      "dev.piggy.n7q4m2.test.MenuCameraGameTest",
+      "dev.piggy.n7q4m2.test.SeeThroughGameTest",
+      "dev.piggy.n7q4m2.test.RightClickTimingGameTest",
+      "dev.piggy.n7q4m2.test.WaterBucketTimingGameTest",
+      "dev.piggy.n7q4m2.test.BucketCycleGameTest",
+      "dev.piggy.n7q4m2.test.PerformanceHudGameTest",
+      "dev.piggy.n7q4m2.test.OptimizationGameTest",
+      "dev.piggy.n7q4m2.test.PlantingUseGameTest",
+      "dev.piggy.n7q4m2.test.ResourceOptimizationGameTest",
+      "dev.piggy.n7q4m2.test.FireworkTimingGameTest",
+      "dev.piggy.n7q4m2.test.TurkishMenuGameTest",
+      "dev.piggy.n7q4m2.test.AntiAfkFocusGameTest"
+    ]
+  },
+  "mixins": [
+    "piggy.test.mixins.json"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "dev.piggy.n7q4m2.client.quality.inventory.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "ShulkerPreviewMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "dev.piggy.n7q4m2.quality.inventory.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "RestockItemStackMixin",
+    "RestockBlockItemMixin",
+    "RestockTotemMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

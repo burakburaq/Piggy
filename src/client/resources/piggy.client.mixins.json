@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "package": "dev.piggy.n7q4m2.client.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "ClientMovementMixin",
+    "ClientCollisionMixin",
+    "ClientConnectionMixin",
+    "ClientFovMixin",
+    "AntiAfkInputMixin",
+    "AntiAfkFocusMixin",
+    "AntiAfkKeyboardMixin",
+    "FreeCameraMouseMixin",
+    "FreeCameraPlayerMixin",
+    "FreeCameraInteractionMixin",
+    "FreeCameraRenderMixin",
+    "SeeThroughStateMixin",
+    "SeeThroughExtractMixin",
+    "SeeThroughVisibilityMixin",
+    "SeeThroughRenderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

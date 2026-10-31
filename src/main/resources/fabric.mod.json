@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "id": "piggy",
+  "version": "${version}",
+  "name": "Piggy",
+  "description": "Adds some new features i like",
+  "icon": "assets/piggy/icon.png",
+  "authors": [
+    "burak"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.piggy.n7q4m2.Piggy"
+    ],
+    "client": [
+      "dev.piggy.n7q4m2.client.PiggyClient"
+    ],
+    "modmenu": [
+      "dev.piggy.n7q4m2.client.PiggyModMenu"
+    ]
+  },
+  "mixins": [
+    "piggy.mixins.json",
+    "piggy-inventory.mixins.json",
+    "piggy-doors.mixins.json",
+    {
+      "config": "piggy.client.mixins.json",
+      "environment": "client"
+    },
+    {
+      "config": "piggy-inventory.client.mixins.json",
+      "environment": "client"
+    },
+    {
+      "config": "piggy-placement.client.mixins.json",
+      "environment": "client"
+    },
+    {
+      "config": "piggy.hud.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "${minecraftDependency}",
+    "java": ">=25",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "modmenu": ">=21.0.0"
+  }
+}
+

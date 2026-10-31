@@ -1,0 +1,27 @@
+# Caches, build output and test data
+.gradle/
+.gradle-user/
+build/
+run/
+.tools/
+*.log
+
+# Private development notes and screenshots
+/PLAN.md
+/docs/
+AGENTS.md
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+!.env.sample
+local.properties
+
+# Editors and os
+.idea/
+.vscode/
+*.iml
+Thumbs.db
+Desktop.ini
+.DS_Store

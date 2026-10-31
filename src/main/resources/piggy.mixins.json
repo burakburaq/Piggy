@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "dev.piggy.n7q4m2.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "PlayerMixin",
+    "LivingEntityMixin",
+    "EntityMixin",
+    "ServerPlayerMixin",
+    "ServerConnectionMixin",
+    "ServerImpulseMixin",
+    "FoodDataAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

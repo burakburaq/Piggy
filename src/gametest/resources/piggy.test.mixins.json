@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "dev.piggy.n7q4m2.test.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "NoServerSupportMixin",
+    "RightClickTestAccessor",
+    "RightClickProbeMixin",
+    "PlacementProbeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

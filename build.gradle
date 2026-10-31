@@ -1,0 +1,128 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+def compatibility = project.minecraft_compatibility
+def bounds = compatibility.split('-to-', -1)
+if (bounds.length > 2 || !bounds.every { it ==~ /\d+(\.\d+){1,2}/ }) {
+    throw new GradleException('minecraft_compatibility must be a release version or an inclusive min-to-max range')
+}
+if (bounds.length == 2) {
+    def low = bounds[0].tokenize('.').collect { it.toBigInteger() }
+    def high = bounds[1].tokenize('.').collect { it.toBigInteger() }
+    while (low.size() < high.size()) low.add(0.toBigInteger())
+    while (high.size() < low.size()) high.add(0.toBigInteger())
+    def ordering = (0..<low.size()).collect { low[it] <=> high[it] }.find { it != 0 } ?: 0
+    if (ordering >= 0) throw new GradleException('minecraft_compatibility range must have an increasing minimum and maximum')
+}
+def minecraftDependency = bounds.length == 1 ? bounds[0] : ">=${bounds[0]} <=${bounds[1]}"
+base { archivesName = "piggy-v${project.mod_version}-for-fabric-${compatibility}" }
+tasks.withType(AbstractArchiveTask).configureEach { archiveVersion.set('') }
+
+repositories {
+    maven { url = 'https://maven.terraformersmc.com/releases/' }
+}
+
+loom {
+    splitEnvironmentSourceSets()
+    mods {
+        piggy {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+}
+
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    compileOnly "com.terraformersmc:modmenu:${modmenu_version}"
+    localRuntime "com.terraformersmc:modmenu:${modmenu_version}"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4' 
+    testImplementation sourceSets.client.output
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'minecraftDependency', minecraftDependency
+    filesMatching('fabric.mod.json') {
+        expand version: project.version, minecraftDependency: minecraftDependency
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
+    options.encoding = 'UTF-8'
+}
+tasks.withType(ProcessResources).configureEach { filteringCharset = 'UTF-8' }
+
+// Mojibake is valid UTF-8 too; reject it before shipping language resources.
+def verifyLanguageResources = tasks.register('verifyLanguageResources') {
+    def languages = fileTree('src/client/resources/assets/piggy/lang') { include '*.json' }
+    inputs.files(languages)
+    doLast {
+        languages.each { file ->
+            new groovy.json.JsonSlurper().parse(file, 'UTF-8').each { key, value ->
+                if (value =~ /[\u00c3\u00c4\u00c5\u00c2\ufffd]|\u00e2[\u20ac\u2020]/)
+                    throw new GradleException("Corrupt translation in ${file.name}: ${key}")
+            }
+        }
+    }
+}
+tasks.named('processClientResources') { dependsOn verifyLanguageResources }
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+jar { from('LICENSE') }
+test { useJUnitPlatform() }
+
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = 'piggy-gametest'
+        enableGameTests = false
+        enableClientGameTests = true
+    }
+}
+
+// Fabric's test packet synchronizer cannot track all dimension-transfer packets.
+tasks.named('runClientGameTest') {
+    jvmArgs '-Dfabric.client.gametest.disableNetworkSynchronizer=true'
+    if (project.hasProperty('preparePlaytest')) {
+        jvmArgs '-Dpiggy.preparePlaytest=true'
+    }
+}
+
+// Select the affected client scenario without running every feature: -PclientTest=QualityHudGameTest.
+tasks.named('processGametestResources') {
+    inputs.property('clientTest', providers.gradleProperty('clientTest').orElse('all'))
+    doLast {
+        if (project.hasProperty('clientTest')) {
+            def metadata = destinationDir.toPath().resolve('fabric.mod.json').toFile()
+            def data = new groovy.json.JsonSlurper().parse(metadata)
+            def selected = data.entrypoints['fabric-client-gametest'].findAll { it.endsWith('.' + project.property('clientTest')) }
+            if (selected.isEmpty()) throw new GradleException('Unknown client test: ' + project.property('clientTest'))
+            data.entrypoints['fabric-client-gametest'] = selected
+            metadata.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
+        }
+    }
+}
+
+// A graphics failure can terminate the client normally; require the migration check's completion marker.
+tasks.named('runClientGameTest') {
+    doLast {
+        def completionMarker = ['MigrationSmokeGameTest': 'MIGRATION_26_3_PASS', 'BhopToggleGameTest': 'BHOP_TOGGLE_PASS', 'ClientOnlyBhopGameTest': 'CLIENT_ONLY_BHOP_PASS', 'AntiAfkGameTest': 'ANTI_AFK_PASS', 'MenuCameraGameTest': 'MENU_CAMERA_PASS', 'SeeThroughGameTest': 'SEE_THROUGH_PASS', 'RightClickTimingGameTest': 'RIGHT_CLICK_TIMING_PASS', 'WaterBucketTimingGameTest': 'WATER_BUCKET_TIMING_PASS', 'BucketCycleGameTest': 'BUCKET_CYCLE_PASS', 'PerformanceHudGameTest': 'PERFORMANCE_HUD_PASS', 'OptimizationGameTest': 'OPTIMIZATION_PASS', 'PlantingUseGameTest': 'PLANTING_USE_PASS', 'ResourceOptimizationGameTest': 'RESOURCE_OPTIMIZATION_PASS', 'FireworkTimingGameTest': 'FIREWORK_TIMING_PASS', 'TurkishMenuGameTest': 'TURKISH_MENU_PASS', 'AntiAfkFocusGameTest': 'ANTI_AFK_FOCUS_PASS'][project.findProperty('clientTest')]
+        if (completionMarker != null) {
+            def log = layout.buildDirectory.file('run/clientGameTest/logs/latest.log').get().asFile
+            if (!log.exists() || !log.text.contains(completionMarker))
+                throw new GradleException('Selected client check did not complete; inspect the game log.')
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "dev.piggy.n7q4m2.client.quality.hud.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "SimpleDebugMixin",
+    "FoodHudMixin",
+    "PerformanceMetricsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
