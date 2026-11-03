@@ -8,7 +8,7 @@
   "authors": [
     "burak"
   ],
-  "license": "MIT",
+  "license": "LicenseRef-Proprietary",
   "environment": "*",
   "entrypoints": {
     "main": [
