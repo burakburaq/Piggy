@@ -103,3 +103,7 @@ Blokların kendisini gizlemeden diğer oyuncuları blokların arkasından göste
 
 ### Serbest kamera
 Oyuncu yerinde sabit kalırken kamerayı bağımsız olarak hareket ettirir. Kamerayı daha hızlı hareket ettirmek için **Ctrl** tuşunu basılı tutun. Kamera hareketi, sunucuya oyuncu hareketi olarak gönderilmez.
+
+## License
+Piggy is licensed under the [MIT License](LICENSE).
+© 2026 burakburaq.

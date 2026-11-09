@@ -6,10 +6,8 @@ run/
 .tools/
 *.log
 
-# Private development notes and screenshots
-/PLAN.md
+# Private
 /docs/
-AGENTS.md
 
 # Local configuration and credentials
 .env

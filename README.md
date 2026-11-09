@@ -103,3 +103,7 @@ Shows other players through blocks without hiding the blocks themselves.
 
 ### Free camera
 Moves the camera independently while player remains stationary. Hold **Ctrl** to move the camera faster. Camera movement is not sent to the server as player movement.
+
+## License
+Piggy is licensed under the [MIT License](LICENSE).
+© 2026 burakburaq.
